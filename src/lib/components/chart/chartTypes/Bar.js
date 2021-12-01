@@ -10,7 +10,7 @@ const Chart = ({ displayValues = true, align = "center" }) => {
       }
     },
     layout: {
-      padding: 38,
+      padding: 15,
     },
     plugins: {
       tooltip: {

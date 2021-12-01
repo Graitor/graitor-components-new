@@ -10,7 +10,7 @@ const Chart = ({ displayValues = true, fill = false, align = "center" }) => {
       }
     },
     layout: {
-      padding: 38,
+      padding: 15,
     },
     elements: {
       line: {

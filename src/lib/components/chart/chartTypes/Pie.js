@@ -1,13 +1,8 @@
-const cutLabel = (value = "") => {
-  if (value === "unknown") return "?";
-  return value.substr(0, 3);
-}
-
 const Chart = ({ unit = "", labels, displayValues = true }) => {
 
   return {
     layout: {
-      padding: 38,
+      padding: 15,
     },
     plugins: {
       tooltip: {
@@ -28,11 +23,12 @@ const Chart = ({ unit = "", labels, displayValues = true }) => {
         borderWidth: 1,
         borderColor: '#000',
         formatter: function (value, { dataIndex }) {
-          if (displayValues && value > 0) {
+          if (Array.isArray(labels) && displayValues && value > 0) {
             value = value.toString();
             value = value.split(/(?=(?:...)*$)/);
             value = value.join(',');
-            return `${ cutLabel(labels[dataIndex]) }: ${ value }${ unit }`;
+            if (labels.length <= dataIndex) return null
+            return `${ labels[dataIndex] }: ${ value }${ unit }`;
           } else {
             return null
           }

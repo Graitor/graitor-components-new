@@ -1,3 +1,7 @@
-import GraitorChart from './components/Chart'
+import GraitorChart from './components/chart/GraitorChart'
+import GraitorDropdown from './components/dropdown/GraitorDropdown'
 
-export { GraitorChart }
+export {
+  GraitorChart,
+  GraitorDropdown
+}

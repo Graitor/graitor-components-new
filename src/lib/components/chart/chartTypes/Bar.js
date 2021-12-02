@@ -2,7 +2,9 @@ const Chart = ({ displayValues = true, align = "center" }) => {
 
   return {
     scales: {
-      yAxes: {},
+      yAxes: {
+        min: 0,
+      },
       xAxes: {
         grid: {
           display: false

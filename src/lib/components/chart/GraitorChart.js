@@ -1,10 +1,9 @@
-import React from "react";
-import './index.css'
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import './GraitorChart.css'
 import Chart from 'chart.js/auto';
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar, Pie, Line } from "./chartTypes";
-import { GraitorDropdown } from "../index";
+import { GraitorDropdown } from "../../index";
 
 Chart.register(ChartDataLabels);
 
@@ -12,12 +11,19 @@ Chart.register(ChartDataLabels);
 const GraitorChart = ({
                         id,
                         title = "Required",
-                        type,
+                        defaultType = "bar",
                         dataset = {},
                         colors = [],
                         formatLabels = (label) => label
                       }) => {
   const [chart, setChart] = useState(null)
+  const [type, setType] = useState(defaultType)
+
+  const options = [
+    { key: 'pie', value: 'Pie' },
+    { key: 'bar', value: 'Bar' },
+    { key: 'line', value: 'Line' },
+  ]
 
   const getRandomColor = () => {
     return `rgb(${ Math.floor(Math.random() * 255) },${ Math.floor(Math.random() * 255) },${ Math.floor(Math.random() * 255) })`
@@ -34,22 +40,40 @@ const GraitorChart = ({
   }
 
   const getOptions = (type) => {
+    let chart = Pie({ labels: Object.keys(dataset).map(item => formatLabels(item)) })
+
     switch (type) {
       case "pie":
-        return Pie({ labels: Object.keys(dataset) })
+        return chart
       case "bar":
-        return Bar({})
+        chart = Bar({ displayValues: false })
+        break
       case "line":
-        return Line({})
+        chart = Line({})
+        break
       default:
         console.error(`Unknown chart type ${ type }`)
     }
+    if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 5) {
+      chart.scales.yAxes.ticks = {
+        stepSize: 1
+      }
+    }
+    return chart
+  }
+
+  const isDatasetEmpty = () => {
+    return dataset == null
+      || Object.keys(dataset).length === 0
+      || Object.values(dataset).reduce((acc, next) => acc + next, 0) === 0
   }
 
   useEffect(() => {
     if (chart) {
       chart.destroy()
     }
+
+    if (isDatasetEmpty()) return
 
     setChart(new Chart(
       document.getElementById(id).getContext('2d'),
@@ -67,39 +91,33 @@ const GraitorChart = ({
         options: getOptions(type)
       }
     ));
-  }, [])
+  }, [type])
 
 
   return (
-    <div key={ id } style={ {
-      width: '500px',
-      margin: '.5em',
-      border: 'solid brown 1px',
-      borderRadius: '25px',
-      backgroundColor: '#fff'
-    } }>
-      <div style={ {
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '1em'
-      } }>
-        <div>
-          <strong style={{ color: '#000' }}>{ title }</strong>
-          {/*<span style={ { margin: '.5em' } }>#datepicker</span>*/}
-        </div>
-        <div>
-          <GraitorDropdown title={"Type"}
-                           options={[
-                             { key: 'pie', value: 'Pie' },
-                             { key: 'bar', value: 'Bar' },
-                             { key: 'line', value: 'Line' },
-                           ]}
-          />
-        </div>
+    <div key={ id } className={ "chart-wrapper" }>
+      <div className={ "chart-header" }>
+        <strong>{ title }</strong>
+        { isDatasetEmpty() &&
+        <div className={ "chart-empty-note" }>Nothing to show</div>
+        }
+        { !isDatasetEmpty() &&
+        <GraitorDropdown title={ "Type" }
+                         defaultItem={ options.find(item => item.key === defaultType) }
+                         options={ options }
+                         onChange={ (oldValue, newValue) => {
+                           setType(newValue.key)
+                         } }
+        />
+        }
       </div>
-      <canvas id={ id } width="400" height="400"/>
-      <div style={ { position: 'relative' } }>
-        <span className={ "note" }>Graitor Charts</span>
+      { !isDatasetEmpty() &&
+      <div>
+        <canvas id={ id } width="400" height="400" style={ { maxHeight: '500px', maxWidth: '98%' } }/>
+      </div>
+      }
+      <div className={ "chart-footer" }>
+        <span className={ "chart-note" }>Graitor Charts</span>
       </div>
     </div>
   )

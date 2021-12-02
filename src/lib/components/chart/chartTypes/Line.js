@@ -2,7 +2,9 @@ const Chart = ({ displayValues = true, fill = false, align = "center" }) => {
 
   return {
     scales: {
-      yAxes: {},
+      yAxes: {
+        min: 0,
+      },
       xAxes: {
         grid: {
           display: false
@@ -45,7 +47,7 @@ const Chart = ({ displayValues = true, fill = false, align = "center" }) => {
         borderWidth: 1,
         borderRadius: 25,
         formatter: function(value, { dataIndex }) {
-          if (displayValues && value) {
+          if (displayValues) {
             return `${value}`;
           }
           return null

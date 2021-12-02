@@ -1,0 +1,68 @@
+.dropdown-wrapper {
+    position: relative;
+    font-size: 13px;
+}
+
+.dropdown-header {
+    min-width: 100px;
+    background-color: #eee;
+    height: 30px;
+    border: solid 1px black;
+    color: black;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.dropdown-list {
+    top: 0;
+    background-color: #eee;
+    min-width: 100px;
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    position: absolute;
+}
+
+.dropdown-list-item {
+    display: flex;
+    width: 100%;
+    padding: 0 15px;
+    align-items: center;
+    background-color: #eee;
+    color: black;
+    white-space: nowrap;
+    height: 30px;
+    border-bottom: solid #aaa 1px;
+    cursor: pointer;
+}
+
+/* should add extra space for bold, not working */
+.dropdown-list-item::before {
+    display: block;
+    content: attr(title);
+    font-weight: bold;
+    height: 0;
+    color: transparent;
+    overflow: hidden;
+    visibility: hidden;
+}
+/* should add extra space for bold, not working */
+.dropdown-list-item::after {
+    display: block;
+    content: attr(title);
+    font-weight: bold;
+    height: 0;
+    color: transparent;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.dropdown-list-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-list-item:hover {
+    font-weight:bold;
+}

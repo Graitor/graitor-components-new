@@ -10,7 +10,7 @@
     "chartjs",
     "GraitorDropdown"
   ],
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": false,
   "main": "dist/index.tsx",
   "module": "dist/index.tsx",

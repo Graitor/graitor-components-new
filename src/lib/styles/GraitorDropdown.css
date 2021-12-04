@@ -13,6 +13,10 @@
     cursor: pointer;
 }
 
+.dropdown-header-text {
+    padding: 0 .5em;
+}
+
 .dropdown-list {
     top: 0;
     background-color: #eee;

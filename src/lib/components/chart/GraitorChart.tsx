@@ -1,35 +1,47 @@
-import React, { useEffect, useState } from "react";
-import './GraitorChart.css'
+import { FC } from "react";
+import { useEffect, useState } from "react";
+import '../../styles/GraitorChart.css'
 import Chart from 'chart.js/auto';
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { Bar, Pie, Line } from "./chartTypes";
-import { GraitorDropdown } from "../../index";
+import { Bar, Pie, Line, ChartType, ChartScaleOptions } from "./chartTypes";
+import { GraitorDropdown, DropdownItem } from "./../dropdown";
+import { PieChartOptions } from "./chartTypes/Pie";
+import { BarChartOptions } from "./chartTypes/Bar";
+import { LineChartOptions } from "./chartTypes/Line";
 
 Chart.register(ChartDataLabels);
 
+interface Props {
+  id: string,
+  title: string,
+  defaultType?: ChartType,
+  dataset: object,
+  colors?: string[],
+  formatLabels?: (label: string) => string
+}
 
-const GraitorChart = ({
+const GraitorChart: FC<Props> = ({
                         id,
-                        title = "Required",
-                        defaultType = "bar",
-                        dataset = {},
+                        title,
+                        defaultType = ChartType.BAR,
+                        dataset,
                         colors = [],
                         formatLabels = (label) => label
-                      }) => {
-  const [chart, setChart] = useState(null)
-  const [type, setType] = useState(defaultType)
+                      }): JSX.Element => {
+  const [chart, setChart] = useState<Chart>()
+  const [type, setType] = useState<ChartType>(defaultType)
 
-  const options = [
+  const options: DropdownItem[] = [
     { key: 'pie', value: 'Pie' },
     { key: 'bar', value: 'Bar' },
     { key: 'line', value: 'Line' },
   ]
 
-  const getRandomColor = () => {
+  const getRandomColor = (): string => {
     return `rgb(${ Math.floor(Math.random() * 255) },${ Math.floor(Math.random() * 255) },${ Math.floor(Math.random() * 255) })`
   }
 
-  const getColors = () => {
+  const getColors = (): string|string[] => {
     const innerColors = [...colors]
     if (colors.length === 0) innerColors.push(getRandomColor())
     if (type !== 'pie') return innerColors[0];
@@ -39,30 +51,30 @@ const GraitorChart = ({
     return innerColors;
   }
 
-  const getOptions = (type) => {
-    let chart = Pie({ labels: Object.keys(dataset).map(item => formatLabels(item)) })
+  const getOptions = (type: ChartType): PieChartOptions|ChartScaleOptions|undefined => {
+    let options: BarChartOptions|LineChartOptions
 
     switch (type) {
       case "pie":
-        return chart
+        return Pie({ labels: Object.keys(dataset).map(item => formatLabels(item)) })
       case "bar":
-        chart = Bar({ displayValues: false })
-        break
+        options = Bar({ displayValues: false })
+        if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 5) {
+          options.scales.yAxes.ticks.stepSize = 1
+        }
+        return options
       case "line":
-        chart = Line({})
-        break
+        options = Line({})
+        if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 5) {
+          options.scales.yAxes.ticks.stepSize = 1
+        }
+        return options
       default:
         console.error(`Unknown chart type ${ type }`)
     }
-    if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 5) {
-      chart.scales.yAxes.ticks = {
-        stepSize: 1
-      }
-    }
-    return chart
   }
 
-  const isDatasetEmpty = () => {
+  const isDatasetEmpty = (): boolean => {
     return dataset == null
       || Object.keys(dataset).length === 0
       || Object.values(dataset).reduce((acc, next) => acc + next, 0) === 0
@@ -75,10 +87,11 @@ const GraitorChart = ({
 
     if (isDatasetEmpty()) return
 
+    const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
     setChart(new Chart(
-      document.getElementById(id).getContext('2d'),
+      canvas.getContext('2d')!,
       {
-        type: type.toLowerCase(),
+        type: type,
         data: {
           labels: Object.keys(dataset).map(item => formatLabels(item)),
           datasets: [
@@ -88,6 +101,7 @@ const GraitorChart = ({
             }
           ]
         },
+        // @ts-ignore
         options: getOptions(type)
       }
     ));
@@ -105,8 +119,8 @@ const GraitorChart = ({
         <GraitorDropdown title={ "Type" }
                          defaultItem={ options.find(item => item.key === defaultType) }
                          options={ options }
-                         onChange={ (oldValue, newValue) => {
-                           setType(newValue.key)
+                         onChange={ (_oldValue, { key }) => {
+                           setType(key as ChartType)
                          } }
         />
         }

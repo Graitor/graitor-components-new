@@ -1,20 +1,37 @@
-import React, { useEffect, useState } from "react";
-import './GraitorDropdown.css'
+import { FC, useEffect, useRef, useState } from "react";
+import '../../styles/GraitorDropdown.css'
+import { generateId } from "../../helpers/generator";
+import { getElementsWidth } from "../../helpers/element";
 
+export interface DropdownItem {
+  key: string,
+  value: string,
+}
 
-const GraitorDropdown = ({
-                           title,
-                           options = [],
-                           defaultItem = null,
-                           open = false,
-                           multiple = false,
-                           onChange = () => {}
-                         }) => {
+interface Props {
+  id?: string,
+  title: string,
+  options?: DropdownItem[],
+  defaultItem?: DropdownItem,
+  open?: boolean,
+  multiple?: boolean,
+  onChange?: (oldValue: DropdownItem|null, newValue: DropdownItem) => void,
+}
 
-  const [activeIndex, setActiveIndex] = useState(-1)
-  const [isDropdownOpen, setDropdownOpen] = useState(open)
+const GraitorDropdown: FC<Props> = ({
+                                      id = generateId(),
+                                      title,
+                                      options = [],
+                                      defaultItem = null,
+                                      open = false,
+                                      onChange = () => {}
+                                    }): JSX.Element => {
 
-  const getActiveItem = () => {
+  const [activeIndex, setActiveIndex] = useState<number>(-1)
+  const [isDropdownOpen, setDropdownOpen] = useState<boolean>(open)
+  const innerId = useRef<string>()
+
+  const getActiveItem = (): DropdownItem|null => {
     return activeIndex >= 0 ? options[activeIndex] : null
   }
 
@@ -28,52 +45,61 @@ const GraitorDropdown = ({
     }
   }, [])
 
-  const toggle = (value) => {
-    setDropdownOpen(value === true || value === false ? value : !isDropdownOpen)
+  useEffect(() => {
+    if (!innerId.current) {
+      innerId.current = id
+    }
+  }, [id])
+
+  const toggle = () => {
+    setDropdownOpen(!isDropdownOpen)
   }
 
   useEffect(() => {
     if (isDropdownOpen) {
       window.addEventListener('click', toggle, { once: true })
     } else {
-      window.removeEventListener('click', toggle, { once: true })
+      window.removeEventListener('click', toggle)
     }
   }, [isDropdownOpen])
 
-  const selectItem = (item, index) => {
+  const selectItem = (_item: DropdownItem, index: number) => {
     const oldValue = activeIndex >= 0 ? options[activeIndex] : null
     setActiveIndex(index)
     onChange(oldValue, options[index])
-    toggle(false)
+    toggle()
   }
 
   return (
     <div className="dropdown-wrapper">
-      <button className={ "dropdown-header" }
+      <button id={innerId.current}
+              className={ "dropdown-header" }
               style={ isDropdownOpen ? { cursor: 'default' } : {} }
               onClick={ (event) => {
                 event.stopPropagation()
                 toggle()
               } }
       >
-        <span className="dropdown-title">{ title }</span>
-        { activeIndex >= 0 &&
-        <span className="dropdown-active">: <strong>{ getActiveItem().value }</strong></span>
-        }
+        <div className={"dropdown-header-text"}>
+          <span className="dropdown-title">{ title }</span>
+          { activeIndex >= 0 &&
+          <span className="dropdown-active">: <strong>{ getActiveItem()!.value }</strong></span>
+          }
+        </div>
       </button>
-      <div className="dropdown-list" style={ isDropdownOpen ? { border: 'solid 1px black' } : {} }>
+      <div className="dropdown-list" style={ isDropdownOpen ? { border: 'solid 1px black', minWidth: `${getElementsWidth(innerId.current!)}px` } : {} }>
         { isDropdownOpen && options.map((item, index) =>
-          <div key={ item.key }
-               title={ 'x' }
-               className="dropdown-list-item"
-               style={ activeIndex === index ? { fontWeight: '600' } : {} }
-               onClick={ (event) => {
-                 event.stopPropagation()
-                 selectItem(item, index)
-               } }
-          >
-            { item.value }
-          </div>
+                                          <div key={ item.key }
+                                               title={ 'x' }
+                                               className="dropdown-list-item"
+                                               style={ activeIndex === index ? { fontWeight: '600' } : {} }
+                                               onClick={ (event) => {
+                                                 event.stopPropagation()
+                                                 selectItem(item, index)
+                                               } }
+                                          >
+                                            { item.value }
+                                          </div>
         ) }
       </div>
     </div>

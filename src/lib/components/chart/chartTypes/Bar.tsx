@@ -1,8 +1,24 @@
-const Chart = ({ displayValues = true, align = "center" }) => {
+import { ChartAlignType, ChartAnchorType, ChartOptions, ChartScaleOptions } from "./index";
+
+interface Props {
+  displayValues?: boolean,
+  align?: ChartAlignType,
+  anchor?: ChartAnchorType,
+}
+
+export interface BarChartOptions extends ChartOptions, ChartScaleOptions {
+}
+
+const Chart = ({
+                 displayValues = true,
+                 align = ChartAlignType.CENTER,
+                 anchor = ChartAnchorType.CENTER
+               }: Props): BarChartOptions => {
 
   return {
     scales: {
       yAxes: {
+        ticks: {},
         min: 0,
       },
       xAxes: {
@@ -28,10 +44,10 @@ const Chart = ({ displayValues = true, align = "center" }) => {
       datalabels: {
         align: align,
         offset: 0,
-        anchor: align,
+        anchor: anchor,
         backgroundColor: 'white',
         borderRadius: 6,
-        formatter: function (value, { dataIndex }) {
+        formatter: function (value) {
           if (displayValues && value) {
             return `${ value }`;
           }
@@ -46,9 +62,6 @@ const Chart = ({ displayValues = true, align = "center" }) => {
             font: {
               weight: 'bold'
             },
-            value: {
-              color: 'green'
-            }
           },
         }
       }

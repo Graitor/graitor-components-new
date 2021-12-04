@@ -1,5 +1,5 @@
-import GraitorChart from './components/chart/GraitorChart'
-import GraitorDropdown from './components/dropdown/GraitorDropdown'
+import GraitorDropdown from "./components/dropdown/GraitorDropdown.js";
+import GraitorChart from "./components/chart/GraitorChart.js";
 
 export {
   GraitorChart,

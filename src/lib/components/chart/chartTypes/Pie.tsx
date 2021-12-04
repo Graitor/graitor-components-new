@@ -1,4 +1,16 @@
-const Chart = ({ unit = "", labels, displayValues = true }) => {
+import { ChartAlignType, ChartAnchorType, ChartOptions } from "./index";
+
+interface Props {
+  displayValues?: boolean,
+  unit?: string,
+  labels: string[],
+}
+
+export interface PieChartOptions extends ChartOptions {
+
+}
+
+const Chart = ({ labels, displayValues = true, unit = "" }: Props): PieChartOptions => {
 
   return {
     layout: {
@@ -12,23 +24,20 @@ const Chart = ({ unit = "", labels, displayValues = true }) => {
         display: false,
       },
       datalabels: {
-        color: 'pink',
         clamp: true,
-        align: ({ dataIndex }) => dataIndex % 2 === 0 ? 'start' : 'end',
+        align: ({ dataIndex }) => dataIndex % 2 === 0 ? ChartAlignType.START : ChartAlignType.END,
         offset: ({ dataIndex }) => dataIndex % 2 === 0 ? 0 : Math.random() * 50,
-        anchor: ({ dataIndex }) => dataIndex % 2 === 0 ? 'end' : 'center',
+        anchor: ({ dataIndex }) => dataIndex % 2 === 0 ? ChartAnchorType.END : ChartAnchorType.CENTER,
         backgroundColor: 'white',
         borderRadius: 6,
         padding: 3,
         borderWidth: 1,
         borderColor: '#000',
-        formatter: function (value, { dataIndex }) {
+        formatter: (value: number, { dataIndex }: { dataIndex: number }): string|null => {
           if (Array.isArray(labels) && displayValues && value > 0) {
-            value = value.toString();
-            value = value.split(/(?=(?:...)*$)/);
-            value = value.join(',');
+            const formattedValue: string = value.toString().split(/(?=(?:...)*$)/).join(',');
             if (labels.length <= dataIndex) return null
-            return `${ labels[dataIndex] }: ${ value }${ unit }`;
+            return `${ labels[dataIndex] }: ${ formattedValue }${ unit }`;
           } else {
             return null
           }
@@ -42,9 +51,6 @@ const Chart = ({ unit = "", labels, displayValues = true }) => {
             font: {
               weight: 'bold'
             },
-            value: {
-              color: 'green'
-            }
           },
         }
       }

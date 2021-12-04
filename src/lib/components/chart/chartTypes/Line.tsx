@@ -1,8 +1,37 @@
-const Chart = ({ displayValues = true, fill = false, align = "center" }) => {
+import { ChartAlignType, ChartAnchorType, ChartOptions, ChartScaleOptions } from "./index";
+
+export enum LineChartPointType {
+  CIRCLE = "circle"
+}
+
+interface Props {
+  displayValues?: boolean,
+  fill?: boolean,
+  align?: ChartAlignType
+}
+
+export interface LineChartOptions extends ChartOptions, ChartScaleOptions {
+  elements: {
+    line: {
+      fill: boolean,
+      borderColor: string,
+      borderWidth: number,
+    },
+    point: {
+      pointStyle: LineChartPointType,
+      backgroundColor: string,
+      borderColor: string,
+      borderWidth: number,
+    }
+  },
+}
+
+const Chart = ({ displayValues = true, fill = false, align = ChartAlignType.CENTER }: Props): LineChartOptions => {
 
   return {
     scales: {
       yAxes: {
+        ticks: {},
         min: 0,
       },
       xAxes: {
@@ -21,7 +50,7 @@ const Chart = ({ displayValues = true, fill = false, align = "center" }) => {
         borderWidth: 2,
       },
       point: {
-        pointStyle: 'circle',
+        pointStyle: LineChartPointType.CIRCLE,
         backgroundColor: '#fff',
         borderColor: '#000',
         borderWidth: 1
@@ -41,12 +70,12 @@ const Chart = ({ displayValues = true, fill = false, align = "center" }) => {
       datalabels: {
         align: align,
         offset: 10,
-        anchor: 'center',
+        anchor: ChartAnchorType.CENTER,
         backgroundColor: '#fff',
         borderColor: '#000',
         borderWidth: 1,
         borderRadius: 25,
-        formatter: function(value, { dataIndex }) {
+        formatter: function(value: number): string|null {
           if (displayValues) {
             return `${value}`;
           }
@@ -61,9 +90,6 @@ const Chart = ({ displayValues = true, fill = false, align = "center" }) => {
             font: {
               weight: 'bold'
             },
-            value: {
-              color: 'green'
-            }
           },
         }
       }

@@ -1,6 +1,6 @@
 {
   "name": "graitor-components",
-  "author": "jakubzzak",
+  "author": "jakubzzak <jakub@graitor.dk> (https://jakubzzak.netlify.app/)",
   "contributors": [],
   "description": "United library for Graitor components used in internal systems.",
   "keywords": [
@@ -10,7 +10,7 @@
     "chartjs",
     "GraitorDropdown"
   ],
-  "version": "0.0.18",
+  "version": "0.0.19",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,9 +29,8 @@
     "react-dom": "^17.0.2"
   },
   "scripts": {
-    "ts": "rm -rf dist && tsc",
     "start": "react-scripts start",
-    "build": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+    "build": "rm -rf dist && tsc --noEmit false && cp -a ./src/lib/styles/ ./dist/styles/",
     "deploy": "yarn build && yarn publish",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

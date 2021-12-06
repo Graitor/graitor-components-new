@@ -2,7 +2,7 @@
 
 United library for Graitor components.
 
-CONTRIBUTORS WANTED
+:exclamation: CONTRIBUTORS WANTED :exclamation:
 
 #### Install
 ```

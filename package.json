@@ -2,7 +2,7 @@
   "name": "graitor-components",
   "author": "jakubzzak <jakub@graitor.dk> (https://jakubzzak.netlify.app/)",
   "contributors": [],
-  "description": "United library for Graitor components used in internal systems.",
+  "description": "United library for Graitor components.",
   "keywords": [
     "Graitor.dk",
     "recycle",

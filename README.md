@@ -1,16 +1,16 @@
-#Graitor Components
+# Graitor Components
 
 United library for Graitor components.
 
 CONTRIBUTORS WANTED
 
-###React
+### React
 Works out of the box. Plug and play.
 
-###Vue
+### Vue
 [Vuera](https://www.npmjs.com/package/vuera#react-in-vue---preferred-usage) plugin is required for the React code migration
 
-##Available components:
+## Available components:
 - GraitorChart
 ```javascript
 <GraitorChart id={"chart"}

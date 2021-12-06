@@ -4,6 +4,15 @@ United library for Graitor components.
 
 CONTRIBUTORS WANTED
 
+#### Install
+```
+yarn add graitor-components
+```
+```
+npm i graitor-components
+```
+
+
 ### React
 Works out of the box. Plug and play.
 

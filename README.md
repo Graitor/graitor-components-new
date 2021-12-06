@@ -1,8 +1,16 @@
-# Graitor Components
+#Graitor Components
 
-United library for Graitor components used in internal systems.
+United library for Graitor components.
 
-Available components:
+CONTRIBUTORS WANTED
+
+###React
+Works out of the box. Plug and play.
+
+###Vue
+[Vuera](https://www.npmjs.com/package/vuera#react-in-vue---preferred-usage) plugin is required for the React code migration
+
+##Available components:
 - GraitorChart
 ```javascript
 <GraitorChart id={"chart"}
@@ -34,4 +42,16 @@ Available components:
                    setValue(newValue)
                  }}
 />
+```
+- GraitorTable
+```
+comming soon
+```
+- GraitorStorage
+```
+comming soon
+```
+- GraitorRequest
+```
+comming soon
 ```

@@ -1,4 +1,4 @@
-# Graitor Components
+# Graitor Components :recycle:
 
 United library for Graitor components.
 
@@ -20,7 +20,7 @@ Works out of the box. Plug and play.
 [Vuera](https://www.npmjs.com/package/vuera#react-in-vue---preferred-usage) plugin is required for the React code migration
 
 ## Available components:
-- GraitorChart
+- GraitorChart :chart_with_upwards_trend:
 ```javascript
 <GraitorChart id={"chart"}
               title={"Graitor bar chart"}

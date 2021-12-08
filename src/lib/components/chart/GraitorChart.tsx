@@ -1,10 +1,9 @@
-import { FC } from "react";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import '../../styles/GraitorChart.css'
 import Chart from 'chart.js/auto';
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { Bar, Pie, Line, ChartType, ChartScaleOptions } from "./chartTypes";
-import { GraitorDropdown, DropdownItem } from "./../dropdown";
+import { Bar, ChartScaleOptions, ChartType, Line, Pie } from "./chartTypes";
+import { DropdownItem, GraitorDropdown } from "./../dropdown";
 import { PieChartOptions } from "./chartTypes/Pie";
 import { BarChartOptions } from "./chartTypes/Bar";
 import { LineChartOptions } from "./chartTypes/Line";
@@ -15,21 +14,32 @@ interface Props {
   id: string,
   title: string,
   defaultType?: ChartType,
+  allowedTypes?: ChartType[],
   dataset: object,
   colors?: string[],
   formatLabels?: (label: string) => string
 }
 
 const GraitorChart: FC<Props> = ({
-                        id,
-                        title,
-                        defaultType = ChartType.BAR,
-                        dataset,
-                        colors = [],
-                        formatLabels = (label) => label
-                      }): JSX.Element => {
+                                   id,
+                                   title,
+                                   defaultType ,
+                                   allowedTypes,
+                                   dataset,
+                                   colors = [],
+                                   formatLabels = (label) => label
+                                 }): JSX.Element => {
   const [chart, setChart] = useState<Chart>()
-  const [type, setType] = useState<ChartType>(defaultType)
+  const [type, setType] = useState<ChartType>(allowedTypes && allowedTypes.length > 0 ? defaultType ?? allowedTypes[0] : defaultType ?? ChartType.BAR)
+  const [innerDefaultType] = useState<ChartType>(type)
+  const [reducedOptions, setReducedOptions] = useState<ChartType[]>(allowedTypes || [])
+
+  useEffect(() => {
+    if (defaultType && allowedTypes && !allowedTypes.includes(defaultType)) {
+      throw new Error("When using allowedTypes option, defaultType needs to appear in the array")
+    }
+    setReducedOptions(allowedTypes || []);
+  }, [allowedTypes, defaultType])
 
   const options: DropdownItem[] = [
     { key: 'pie', value: 'Pie' },
@@ -41,7 +51,7 @@ const GraitorChart: FC<Props> = ({
     return `rgb(${ Math.floor(Math.random() * 255) },${ Math.floor(Math.random() * 255) },${ Math.floor(Math.random() * 255) })`
   }
 
-  const getColors = (): string|string[] => {
+  const getColors = (): string | string[] => {
     const innerColors = [...colors]
     if (colors.length === 0) innerColors.push(getRandomColor())
     if (type !== 'pie') return innerColors[0];
@@ -51,8 +61,8 @@ const GraitorChart: FC<Props> = ({
     return innerColors;
   }
 
-  const getOptions = (type: ChartType): PieChartOptions|ChartScaleOptions|undefined => {
-    let options: BarChartOptions|LineChartOptions
+  const getOptions = (type: ChartType): PieChartOptions | ChartScaleOptions | undefined => {
+    let options: BarChartOptions | LineChartOptions
 
     switch (type) {
       case "pie":
@@ -82,12 +92,13 @@ const GraitorChart: FC<Props> = ({
 
   useEffect(() => {
     if (chart) {
-      chart.destroy()
+      chart.destroy();
     }
 
     if (isDatasetEmpty()) return
 
     const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
+    if (!canvas) return
     setChart(new Chart(
       canvas.getContext('2d')!,
       {
@@ -115,10 +126,10 @@ const GraitorChart: FC<Props> = ({
         { isDatasetEmpty() &&
         <div className={ "chart-empty-note" }>Nothing to show</div>
         }
-        { !isDatasetEmpty() &&
+        { (!isDatasetEmpty() && allowedTypes?.length !== 1) &&
         <GraitorDropdown title={ "Type" }
-                         defaultItem={ options.find(item => item.key === defaultType) }
-                         options={ options }
+                         defaultItem={ options.find(item => item.key === innerDefaultType) }
+                         options={ options.filter(option => reducedOptions.length === 0 || reducedOptions.includes(option.key as ChartType)) }
                          onChange={ (_oldValue, { key }) => {
                            setType(key as ChartType)
                          } }

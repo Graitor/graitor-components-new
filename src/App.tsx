@@ -15,7 +15,7 @@ const App: FC = (): JSX.Element => {
         <GraitorChart id={ "chart" }
                       title={ "Graitor test chart" }
                       defaultType={ ChartType.PIE }
-                      allowedTypes={ [ChartType.LINE, ChartType.PIE] }
+                      allowedTypes={ [ChartType.LINE, ChartType.PIE, ChartType.BAR] }
                       dataset={ {
                         '2021-10-17': 1,
                         '2021-10-18': 4,

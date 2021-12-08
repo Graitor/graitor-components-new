@@ -5,12 +5,13 @@
 
 .dropdown-header {
     min-width: 100px;
-    background-color: #eee;
+    background-color: #fff;
     height: 30px;
-    border: solid 1px black;
+    border: solid #00AA89 2px;
     color: black;
     border-radius: 25px;
     cursor: pointer;
+    transition: .3s;
 }
 
 .dropdown-header-text {
@@ -26,7 +27,12 @@
     flex-direction: column;
     border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0px 5px 15px rgb(0, 0, 0, .2);
     position: absolute;
+}
+
+.dropdown-header:hover {
+    box-shadow: inset 0 0 15px rgb(0, 0, 0, .2);
 }
 
 .dropdown-list-item {

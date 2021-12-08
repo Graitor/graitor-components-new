@@ -7,6 +7,11 @@ export enum ChartType {
   BAR = "bar",
   LINE = "line",
 }
+export enum ChartLabelsType {
+  HIDDEN = "hidden",
+  INSIDE = "inside",
+  FLOAT = "float",
+}
 export enum ChartAlignType {
  START = "start",
  CENTER = "center",

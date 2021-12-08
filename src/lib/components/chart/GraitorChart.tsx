@@ -2,7 +2,16 @@ import { FC, useEffect, useState } from "react";
 import '../../styles/GraitorChart.css'
 import Chart from 'chart.js/auto';
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { Bar, ChartScaleOptions, ChartType, Line, Pie } from "./chartTypes";
+import {
+  Bar,
+  ChartAlignType,
+  ChartAnchorType,
+  ChartLabelsType,
+  ChartScaleOptions,
+  ChartType,
+  Line,
+  Pie
+} from "./chartTypes";
 import { DropdownItem, GraitorDropdown } from "./../dropdown";
 import { PieChartOptions } from "./chartTypes/Pie";
 import { BarChartOptions } from "./chartTypes/Bar";
@@ -23,7 +32,7 @@ interface Props {
 const GraitorChart: FC<Props> = ({
                                    id,
                                    title,
-                                   defaultType ,
+                                   defaultType,
                                    allowedTypes,
                                    dataset,
                                    colors = [],
@@ -31,6 +40,7 @@ const GraitorChart: FC<Props> = ({
                                  }): JSX.Element => {
   const [chart, setChart] = useState<Chart>()
   const [type, setType] = useState<ChartType>(allowedTypes && allowedTypes.length > 0 ? defaultType ?? allowedTypes[0] : defaultType ?? ChartType.BAR)
+  const [labelsType, setLabelsType] = useState<ChartLabelsType>(ChartLabelsType.FLOAT)
   const [innerDefaultType] = useState<ChartType>(type)
   const [reducedOptions, setReducedOptions] = useState<ChartType[]>(allowedTypes || [])
 
@@ -41,10 +51,15 @@ const GraitorChart: FC<Props> = ({
     setReducedOptions(allowedTypes || []);
   }, [allowedTypes, defaultType])
 
-  const options: DropdownItem[] = [
-    { key: 'pie', value: 'Pie' },
+  const chartTypeOptions: DropdownItem[] = [
     { key: 'bar', value: 'Bar' },
+    { key: 'pie', value: 'Pie' },
     { key: 'line', value: 'Line' },
+  ]
+  const labelChartOptions: DropdownItem[] = [
+    { key: 'float', value: 'Float' },
+    { key: 'inside', value: 'Inside' },
+    { key: 'hidden', value: 'Hidden' },
   ]
 
   const getRandomColor = (): string => {
@@ -61,26 +76,36 @@ const GraitorChart: FC<Props> = ({
     return innerColors;
   }
 
-  const getOptions = (type: ChartType): PieChartOptions | ChartScaleOptions | undefined => {
+  const getOptions = (type: ChartType, labelsType: ChartLabelsType): PieChartOptions | ChartScaleOptions | undefined => {
     let options: BarChartOptions | LineChartOptions
 
     switch (type) {
-      case "pie":
-        return Pie({ labels: Object.keys(dataset).map(item => formatLabels(item)) })
-      case "bar":
-        options = Bar({ displayValues: false })
+      case ChartType.PIE:
+        return Pie({
+                     labels: Object.keys(dataset).map(item => formatLabels(item)),
+                     displayValues: labelsType !== ChartLabelsType.HIDDEN,
+                     align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.START,
+                   })
+      case ChartType.BAR:
+        options = Bar({
+                        displayValues: labelsType !== ChartLabelsType.HIDDEN,
+                        align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.CENTER,
+                        anchor: labelsType === ChartLabelsType.FLOAT ? ChartAnchorType.END : ChartAnchorType.CENTER,
+                      })
         if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 5) {
           options.scales.yAxes.ticks.stepSize = 1
         }
         return options
-      case "line":
-        options = Line({})
+      case ChartType.LINE:
+        options = Line({
+                         displayValues: labelsType !== ChartLabelsType.HIDDEN,
+                         align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.CENTER,
+                         fill: true,
+                       })
         if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 5) {
           options.scales.yAxes.ticks.stepSize = 1
         }
         return options
-      default:
-        console.error(`Unknown chart type ${ type }`)
     }
   }
 
@@ -113,10 +138,10 @@ const GraitorChart: FC<Props> = ({
           ]
         },
         // @ts-ignore
-        options: getOptions(type)
+        options: getOptions(type, labelsType)
       }
     ));
-  }, [type])
+  }, [type, labelsType])
 
 
   return (
@@ -127,13 +152,23 @@ const GraitorChart: FC<Props> = ({
         <div className={ "chart-empty-note" }>Nothing to show</div>
         }
         { (!isDatasetEmpty() && allowedTypes?.length !== 1) &&
-        <GraitorDropdown title={ "Type" }
-                         defaultItem={ options.find(item => item.key === innerDefaultType) }
-                         options={ options.filter(option => reducedOptions.length === 0 || reducedOptions.includes(option.key as ChartType)) }
-                         onChange={ (_oldValue, { key }) => {
-                           setType(key as ChartType)
-                         } }
-        />
+        <div style={ { display: 'flex' } }>
+          <GraitorDropdown title={ "Labels" }
+                           defaultItem={ labelChartOptions.find(item => item.key === ChartLabelsType.FLOAT) }
+                           options={ labelChartOptions }
+                           onChange={ (_oldValue, { key }) => {
+                             setLabelsType(key as ChartLabelsType)
+                           } }
+          />
+          <div style={ { margin: '.2em' } }></div>
+          <GraitorDropdown title={ "Type" }
+                           defaultItem={ chartTypeOptions.find(item => item.key === innerDefaultType) }
+                           options={ chartTypeOptions.filter(option => reducedOptions.length === 0 || reducedOptions.includes(option.key as ChartType)) }
+                           onChange={ (_oldValue, { key }) => {
+                             setType(key as ChartType)
+                           } }
+          />
+        </div>
         }
       </div>
       { !isDatasetEmpty() &&

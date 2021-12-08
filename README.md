@@ -25,6 +25,7 @@ Works out of the box. Plug and play.
 <GraitorChart id={"chart"}
               title={"Graitor bar chart"}
               defaultType={"bar"}
+              allowedTypes={["bar", "line"]}
               dataset={{
                 '2021-10-17': 1,
                 '2021-10-18': 4,

@@ -1,8 +1,7 @@
-import * as React from 'react';
 import { FC, useState } from 'react';
 import './App.css'
-import { GraitorChart, ChartType } from "./lib/components/chart";
-import { GraitorDropdown, DropdownItem } from "./lib/components/dropdown";
+import { ChartType, GraitorChart } from "./lib/components/chart";
+import { DropdownItem, GraitorDropdown } from "./lib/components/dropdown";
 import ShowCase from "./ShowCase";
 
 
@@ -14,8 +13,9 @@ const App: FC = (): JSX.Element => {
     <div className="App">
       <ShowCase title={ "Chart" }>
         <GraitorChart id={ "chart" }
-                      title={ "Graitor bar chart" }
-                      defaultType={ ChartType.BAR }
+                      title={ "Graitor test chart" }
+                      defaultType={ ChartType.PIE }
+                      allowedTypes={ [ChartType.LINE, ChartType.PIE] }
                       dataset={ {
                         '2021-10-17': 1,
                         '2021-10-18': 4,
@@ -37,7 +37,7 @@ const App: FC = (): JSX.Element => {
                            { key: 'de', value: 'Deutsch' },
                            { key: 'sk', value: 'Slovenčina' },
                          ] }
-                         onChange={ (oldValue, newValue) => {
+                         onChange={ (_oldValue, newValue) => {
                            setDDValue(newValue)
                          } }
         />

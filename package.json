@@ -1,5 +1,6 @@
 {
   "name": "graitor-components",
+  "version": "0.0.22",
   "author": "jakubzzak <jakub@graitor.dk> (https://jakubzzak.netlify.app/)",
   "contributors": [],
   "description": "United library for Graitor components.",
@@ -13,7 +14,6 @@
     "react",
     "vue"
   ],
-  "version": "0.0.22",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

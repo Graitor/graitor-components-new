@@ -22,6 +22,13 @@ export enum ChartAnchorType {
   END = "end",
 }
 
+interface ChartPadding {
+  top?: number,
+  right?: number,
+  bottom?: number,
+  left?: number,
+}
+
 export interface ChartScaleOptions {
   scales: {
     yAxes: {
@@ -40,7 +47,7 @@ export interface ChartScaleOptions {
 
 export interface ChartOptions {
   layout: {
-    padding: number,
+    padding: number|ChartPadding,
   },
   plugins: {
     tooltip: {

@@ -19,24 +19,30 @@ import { LineChartOptions } from "./chartTypes/Line";
 
 Chart.register(ChartDataLabels);
 
+type Dataset = {
+  [key: string]: number
+}
+
 interface Props {
   id: string,
   title: string,
+  dataset: Dataset,
   defaultType?: ChartType,
   allowedTypes?: ChartType[],
-  dataset: object,
   colors?: string[],
-  formatLabels?: (label: string) => string
+  formatLabels?: (label: string) => string,
+  sortLabels?: (first: string, second: string) => number,
 }
 
 const GraitorChart: FC<Props> = ({
                                    id,
                                    title,
+                                   dataset,
                                    defaultType,
                                    allowedTypes,
-                                   dataset,
                                    colors = [],
-                                   formatLabels = (label) => label
+                                   formatLabels = (label) => label,
+                                   sortLabels = (first, second) => first === second ? 0 : first > second ? 1 : -1,
                                  }): JSX.Element => {
   const [chart, setChart] = useState<Chart>()
   const [type, setType] = useState<ChartType>(allowedTypes && allowedTypes.length > 0 ? defaultType ?? allowedTypes[0] : defaultType ?? ChartType.BAR)
@@ -124,16 +130,19 @@ const GraitorChart: FC<Props> = ({
 
     const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
     if (!canvas) return
+
+    const labels = Object.keys(dataset)
+    labels.sort(sortLabels)
     setChart(new Chart(
       canvas.getContext('2d')!,
       {
         type: type,
         data: {
-          labels: Object.keys(dataset).map(item => formatLabels(item)),
+          labels: labels.map(item => formatLabels(item)),
           datasets: [
             {
               backgroundColor: getColors(),
-              data: Object.values(dataset),
+              data: labels.map(label => dataset[label]),
             }
           ]
         },

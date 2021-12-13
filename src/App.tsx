@@ -20,12 +20,17 @@ const App: FC = (): JSX.Element => {
                         '2021-10-17': 1,
                         '2021-10-18': 4,
                         '2021-10-19': 150,
+                        '2021-10-11': 100,
                       } }
                       formatLabels={ (label) => {
                         if (label === "unknown") return "?"
                         const parts = label.split(/-+/g)
                         return `${ parts[2] }/${ parts[1] } ${ parts[0] }`
                       } }
+                      sortLabels={(first, second) => {
+                        if (first === second) return 0
+                        return first > second ? -1 : 1
+                      }}
         />
       </ShowCase>
       <ShowCase title={ "Dropdown" } style={ { display: 'flex', justifyContent: 'space-between' } }>

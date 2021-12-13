@@ -31,6 +31,7 @@ const App: FC = (): JSX.Element => {
                         if (first === second) return 0
                         return first > second ? -1 : 1
                       }}
+                      colors={["#f6a47a", "#5bf13d"]}
         />
       </ShowCase>
       <ShowCase title={ "Dropdown" } style={ { display: 'flex', justifyContent: 'space-between' } }>

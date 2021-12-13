@@ -98,7 +98,7 @@ const GraitorChart: FC<Props> = ({
                         align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.CENTER,
                         anchor: labelsType === ChartLabelsType.FLOAT ? ChartAnchorType.END : ChartAnchorType.CENTER,
                       })
-        if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 5) {
+        if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 6) {
           options.scales.yAxes.ticks.stepSize = 1
         }
         return options
@@ -108,7 +108,7 @@ const GraitorChart: FC<Props> = ({
                          align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.CENTER,
                          fill: true,
                        })
-        if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 5) {
+        if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 6) {
           options.scales.yAxes.ticks.stepSize = 1
         }
         return options

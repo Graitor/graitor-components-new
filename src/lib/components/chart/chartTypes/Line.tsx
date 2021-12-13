@@ -41,7 +41,12 @@ const Chart = ({ displayValues = true, fill = false, align = ChartAlignType.CENT
       }
     },
     layout: {
-      padding: 15,
+      padding: {
+        top: 30,
+        left: 20,
+        right: 20,
+        bottom: 15,
+      },
     },
     elements: {
       line: {
@@ -69,14 +74,14 @@ const Chart = ({ displayValues = true, fill = false, align = ChartAlignType.CENT
       },
       datalabels: {
         align: align,
-        offset: 10,
+        offset: 8,
         anchor: ChartAnchorType.CENTER,
         backgroundColor: '#fff',
         borderColor: '#000',
         borderWidth: 1,
         borderRadius: 25,
         formatter: function(value: number): string|null {
-          if (displayValues) {
+          if (value && displayValues) {
             return `${value}`;
           }
           return null

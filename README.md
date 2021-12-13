@@ -21,6 +21,15 @@ Works out of the box. Plug and play.
 
 ## Available components:
 - GraitorChart :chart_with_upwards_trend:
+  - id (required, string) - ID of the chart
+  - title (required, string) - Title of the chart
+  - dataset (required, object<string, number>) - Data to be displayed
+  - defaultType (optional, string) - Default chart type
+  - allowedTypes (optional, array[line, bar, pie]) - Allowed subarray of chart types 
+  - colors (optional, string[]) - Color pallet to be used for the chart
+  - formatLabels (optional, function) - Format labels
+  - sortLabels (optional, function) - Sort labels
+  - example:
 ```javascript
 <GraitorChart id={"chart"}
               title={"Graitor bar chart"}
@@ -31,14 +40,24 @@ Works out of the box. Plug and play.
                 '2021-10-18': 4,
                 '2021-10-19': 150,
               }}
+              colors={["#f6a47a", "#5bf13d"]}
               formatLabels={(label) => {
                 if (label === "unknown") return "?"
                 const parts = label.split(/-+/g)
                 return `${parts[2]}/${parts[1]} ${parts[0]}`
               }}
+              sortLabels={(first, second) => {
+                if (first === second) return 0
+                return first > second ? -1 : 1
+              }}
 />
 ```
 - GraitorDropdown
+  - title (required, string) - Title of the dropdown
+  - options (required, Item[]) - Array of items
+  - defaultItem (optional, Item) - Item to be set as the default
+  - onChange (optional, function) - Function to be executed on every change
+  - example:
 ```javascript
 <GraitorDropdown title={"Language"}
                  defaultItem={{ key: 'en', value: 'English' }}
@@ -52,6 +71,18 @@ Works out of the box. Plug and play.
                    setValue(newValue)
                  }}
 />
+```
+- GraitorSearch
+```
+comming soon
+```
+- GraitorFilter
+```
+comming soon
+```
+- GraitorPeriodPicker
+```
+comming soon
 ```
 - GraitorTable
 ```

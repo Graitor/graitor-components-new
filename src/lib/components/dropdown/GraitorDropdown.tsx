@@ -11,9 +11,8 @@ export interface DropdownItem {
 interface Props {
   id?: string,
   title: string,
-  options?: DropdownItem[],
+  options: DropdownItem[],
   defaultItem?: DropdownItem,
-  open?: boolean,
   multiple?: boolean,
   onChange?: (oldValue: DropdownItem|null, newValue: DropdownItem) => void,
 }
@@ -23,12 +22,11 @@ const GraitorDropdown: FC<Props> = ({
                                       title,
                                       options = [],
                                       defaultItem = null,
-                                      open = false,
                                       onChange = () => {}
                                     }): JSX.Element => {
 
   const [activeIndex, setActiveIndex] = useState<number>(-1)
-  const [isDropdownOpen, setDropdownOpen] = useState<boolean>(open)
+  const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false)
   const innerId = useRef<string>()
 
   const getActiveItem = (): DropdownItem|null => {

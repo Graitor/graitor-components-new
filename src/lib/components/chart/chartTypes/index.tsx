@@ -1,10 +1,12 @@
-export { default as Bar } from './Bar'
+export { default as HBar } from './HBar'
+export { default as VBar } from './VBar'
 export { default as Pie } from './Pie'
 export { default as Line } from './Line'
 
 export enum ChartType {
   PIE = "pie",
-  BAR = "bar",
+  VBAR = "vbar",
+  HBAR = "hbar",
   LINE = "line",
 }
 export enum ChartLabelsType {
@@ -30,17 +32,29 @@ interface ChartPadding {
 }
 
 export interface ChartScaleOptions {
+  indexAxis?: string,
+  scaleShowValues?: boolean,
   scales: {
     yAxes: {
       ticks: {
+        autoSkip?: boolean,
         stepSize?: number,
       },
+      grid?: {
+        display: boolean,
+      }
       min?: number,
     },
     xAxes: {
-      grid: {
+      ticks: {
+        display?: boolean,
+        autoSkip?: boolean,
+        stepSize?: number,
+      },
+      grid?: {
         display: boolean,
       }
+      min?: number,
     }
   },
 }
@@ -69,7 +83,7 @@ export interface ChartOptions {
       borderColor?: string,
       borderWidth?: number,
       borderRadius?: number,
-      padding?: number,
+      padding?: number|object,
       formatter?: (value: number, { dataIndex }: { dataIndex: number }) => string | null,
       font?: {
         size: number,

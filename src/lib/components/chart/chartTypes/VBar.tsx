@@ -6,14 +6,14 @@ interface Props {
   anchor?: ChartAnchorType,
 }
 
-export interface BarChartOptions extends ChartOptions, ChartScaleOptions {
+export interface VBarChartOptions extends ChartOptions, ChartScaleOptions {
 }
 
 const Chart = ({
                  displayValues = true,
                  align = ChartAlignType.CENTER,
                  anchor = ChartAnchorType.CENTER
-               }: Props): BarChartOptions => {
+               }: Props): VBarChartOptions => {
 
   return {
     scales: {
@@ -22,6 +22,7 @@ const Chart = ({
         min: 0,
       },
       xAxes: {
+        ticks: {},
         grid: {
           display: false
         }

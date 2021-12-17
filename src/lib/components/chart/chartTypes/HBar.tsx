@@ -6,29 +6,46 @@ interface Props {
   anchor?: ChartAnchorType,
 }
 
-export interface BarChartOptions extends ChartOptions, ChartScaleOptions {
+export interface HBarChartOptions extends ChartOptions, ChartScaleOptions {
 }
 
 const Chart = ({
                  displayValues = true,
                  align = ChartAlignType.CENTER,
                  anchor = ChartAnchorType.CENTER
-               }: Props): BarChartOptions => {
+               }: Props): HBarChartOptions => {
 
   return {
+    indexAxis: 'y',
+    scaleShowValues: true,
     scales: {
       yAxes: {
-        ticks: {},
+        ticks: {
+          autoSkip: false,
+        },
         min: 0,
-      },
-      xAxes: {
         grid: {
           display: false
-        }
+        },
+      },
+      xAxes: {
+        ticks: {
+          display: !displayValues,
+          // stepSize: 1,
+        },
+        grid: {
+          display: !displayValues
+        },
+        min: 0,
       }
     },
     layout: {
-      padding: 15,
+      padding: {
+        top: 15,
+        left: 15,
+        right: 25,
+        bottom: 15,
+      },
     },
     plugins: {
       tooltip: {
@@ -43,10 +60,11 @@ const Chart = ({
       },
       datalabels: {
         align: align,
-        offset: 0,
+        offset: 5,
         anchor: anchor,
         backgroundColor: 'white',
         borderRadius: 6,
+        padding: align === ChartAlignType.CENTER ? 3 : 0,
         formatter: function (value) {
           if (displayValues && value) {
             return `${ value }`;

@@ -35,6 +35,7 @@ const Chart = ({ displayValues = true, fill = false, align = ChartAlignType.CENT
         min: 0,
       },
       xAxes: {
+        ticks: {},
         grid: {
           display: false
         }

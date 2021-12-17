@@ -14,8 +14,8 @@ const App: FC = (): JSX.Element => {
       <ShowCase title={ "Chart" }>
         <GraitorChart id={ "chart" }
                       title={ "Graitor test chart" }
-                      defaultType={ ChartType.BAR }
-                      allowedTypes={ [ChartType.LINE, ChartType.PIE, ChartType.BAR] }
+                      defaultType={ ChartType.HBAR }
+                      // allowedTypes={ [ChartType.LINE, ChartType.PIE, ChartType.HBAR] }
                       dataset={ {
                         '2021-09-14': 1,
                         '2021-09-15': 0,
@@ -69,7 +69,7 @@ const App: FC = (): JSX.Element => {
                         '2021-11-02': 0,
                         '2021-11-03': 0,
                         '2021-11-04': 0,
-                        '2021-11-05': 0,
+                        '2021-11-05': 156,
                         '2021-11-06': 0,
                         '2021-11-07': 0,
                         '2021-11-08': 0,

@@ -3,21 +3,24 @@ import '../../styles/GraitorChart.css'
 import Chart from 'chart.js/auto';
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
-  Bar,
   ChartAlignType,
   ChartAnchorType,
   ChartLabelsType,
   ChartScaleOptions,
   ChartType,
+  VBar,
+  HBar,
   Line,
   Pie
 } from "./chartTypes";
 import { DropdownItem, GraitorDropdown } from "./../dropdown";
 import { PieChartOptions } from "./chartTypes/Pie";
-import { BarChartOptions } from "./chartTypes/Bar";
+import { VBarChartOptions } from "./chartTypes/VBar";
+import { HBarChartOptions } from "./chartTypes/HBar";
 import { LineChartOptions } from "./chartTypes/Line";
 
 Chart.register(ChartDataLabels);
+
 
 type Dataset = {
   [key: string]: number
@@ -45,7 +48,7 @@ const GraitorChart: FC<Props> = ({
                                    sortLabels = (first, second) => first === second ? 0 : first > second ? 1 : -1,
                                  }): JSX.Element => {
   const [chart, setChart] = useState<Chart>()
-  const [type, setType] = useState<ChartType>(allowedTypes && allowedTypes.length > 0 ? defaultType ?? allowedTypes[0] : defaultType ?? ChartType.BAR)
+  const [type, setType] = useState<ChartType>(allowedTypes && allowedTypes.length > 0 ? defaultType ?? allowedTypes[0] : defaultType ?? ChartType.HBAR)
   const [labelsType, setLabelsType] = useState<ChartLabelsType>(ChartLabelsType.FLOAT)
   const [innerDefaultType] = useState<ChartType>(type)
   const [reducedOptions, setReducedOptions] = useState<ChartType[]>(allowedTypes || [])
@@ -58,7 +61,8 @@ const GraitorChart: FC<Props> = ({
   }, [allowedTypes, defaultType])
 
   const chartTypeOptions: DropdownItem[] = [
-    { key: 'bar', value: 'Bar' },
+    { key: 'vbar', value: 'VBar' },
+    { key: 'hbar', value: 'HBar' },
     { key: 'pie', value: 'Pie' },
     { key: 'line', value: 'Line' },
   ]
@@ -83,7 +87,7 @@ const GraitorChart: FC<Props> = ({
   }
 
   const getOptions = (type: ChartType, labelsType: ChartLabelsType): PieChartOptions | ChartScaleOptions | undefined => {
-    let options: BarChartOptions | LineChartOptions
+    let options: VBarChartOptions | HBarChartOptions | LineChartOptions
 
     switch (type) {
       case ChartType.PIE:
@@ -92,14 +96,24 @@ const GraitorChart: FC<Props> = ({
                      displayValues: labelsType !== ChartLabelsType.HIDDEN,
                      align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.START,
                    })
-      case ChartType.BAR:
-        options = Bar({
+      case ChartType.VBAR:
+        options = VBar({
+                         displayValues: labelsType !== ChartLabelsType.HIDDEN,
+                         align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.CENTER,
+                         anchor: labelsType === ChartLabelsType.FLOAT ? ChartAnchorType.END : ChartAnchorType.CENTER,
+                       })
+        if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 6) {
+          options.scales.yAxes.ticks.stepSize = 1
+        }
+        return options
+      case ChartType.HBAR:
+        options = HBar({
                         displayValues: labelsType !== ChartLabelsType.HIDDEN,
                         align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.CENTER,
                         anchor: labelsType === ChartLabelsType.FLOAT ? ChartAnchorType.END : ChartAnchorType.CENTER,
                       })
         if (Math.max(...Object.values(dataset)) - Math.min(...Object.values(dataset)) < 6) {
-          options.scales.yAxes.ticks.stepSize = 1
+          options.scales.xAxes.ticks.stepSize = 1
         }
         return options
       case ChartType.LINE:
@@ -131,12 +145,16 @@ const GraitorChart: FC<Props> = ({
     const canvas: HTMLCanvasElement = document.getElementById(id) as HTMLCanvasElement;
     if (!canvas) return
 
+    const actualType = type.includes("bar") ? "bar" : type === "pie" ? "pie" : type === "line" ? "line" : null
+    if (!actualType) return
+
     const labels = Object.keys(dataset)
     labels.sort(sortLabels)
+
     setChart(new Chart(
       canvas.getContext('2d')!,
       {
-        type: type,
+        type: actualType,
         data: {
           labels: labels.map(item => formatLabels(item)),
           datasets: [
@@ -182,7 +200,7 @@ const GraitorChart: FC<Props> = ({
       </div>
       { !isDatasetEmpty() &&
       <div>
-        <canvas id={ id } width="400" height="400" style={ { maxHeight: '500px', maxWidth: '98%' } }/>
+        <canvas id={ id } width="400" height="400" style={ { maxHeight: type === "hbar" ? `${Math.max(Object.keys(dataset).length * 15, 500)}px`: '500px', maxWidth: '98%' } }/>
       </div>
       }
       <div className={ "chart-footer" }>

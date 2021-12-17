@@ -25,16 +25,17 @@ Works out of the box. Plug and play.
   - title (required, string) - Title of the chart
   - dataset (required, object<string, number>) - Data to be displayed
   - defaultType (optional, string) - Default chart type
-  - allowedTypes (optional, array[line, bar, pie]) - Allowed subarray of chart types 
+  - allowedTypes (optional, array[line, vbar, hbar, pie]) - Allowed subarray of chart types
   - colors (optional, string[]) - Color pallet to be used for the chart
   - formatLabels (optional, function) - Format labels
   - sortLabels (optional, function) - Sort labels
+  - notes: hbar type always display all Y labels, thus its height is dynamic 
   - example:
 ```javascript
 <GraitorChart id={"chart"}
               title={"Graitor bar chart"}
-              defaultType={"bar"}
-              allowedTypes={["bar", "line"]}
+              defaultType={"vbar"}
+              allowedTypes={["vbar", "line"]}
               dataset={{
                 '2021-10-17': 1,
                 '2021-10-18': 4,

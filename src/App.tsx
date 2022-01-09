@@ -12,6 +12,17 @@ const App: FC = (): JSX.Element => {
   return (
     <div className="App">
       <ShowCase title={ "Multiple dataset chart" }>
+        <GraitorChart id={ "chart#fails#on#empty" }
+                      title={ "Graitor empty chart" }
+                      defaultType={ ChartType.LINE }
+                      dataset={ [
+                        { label: 'ahoj', data: {} },
+                        { data: { '01': 0, '02': 0 } }
+                      ] }
+                      sortLabels={ () => 1 }
+        />
+      </ShowCase>
+      <ShowCase title={ "Multiple dataset chart" }>
         <GraitorChart id={ "chart#0" }
                       title={ "Graitor test chart" }
                       defaultType={ ChartType.LINE }

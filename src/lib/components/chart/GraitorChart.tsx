@@ -23,7 +23,7 @@ Chart.register(ChartDataLabels);
 
 
 type Dataset = {
-  label: string,
+  label?: string,
   data: {
     [key: string]: number,
   }
@@ -32,7 +32,7 @@ type Dataset = {
 interface Props {
   id: string,
   title: string,
-  dataset: Dataset|Array<Dataset>,
+  dataset: Dataset | Array<Dataset>,
   defaultType?: ChartType,
   allowedTypes?: ChartType[],
   colors?: string[],
@@ -57,15 +57,24 @@ const GraitorChart: FC<Props> = ({
   const [reducedOptions, setReducedOptions] = useState<ChartType[]>(allowedTypes || [])
 
   const throwChartError = (message: string) => {
-    throw new Error(`Chart ${id} encountered an issue! ${message}`)
+    throw new Error(`Chart ${ id } encountered an issue! ${ message }`)
   }
 
   useEffect(() => {
     if (defaultType && allowedTypes && !allowedTypes.includes(defaultType)) {
       throwChartError('When using allowedTypes option, defaultType needs to appear in the array')
     }
-    if (Array.isArray(dataset) && (defaultType === ChartType.PIE || allowedTypes?.includes(ChartType.PIE))) {
-      throwChartError('Pie chart option cannot be used with multiple datasets. Remove it from defaultType and allowedTypes parameters.')
+    if (Array.isArray(dataset)) {
+      if (defaultType === ChartType.PIE || allowedTypes?.includes(ChartType.PIE)) {
+        throwChartError('Pie chart option cannot be used with multiple datasets. Remove it from defaultType and allowedTypes parameters.');
+      }
+      for (let i = 0; i < dataset.length; i++ ) {
+        if (!dataset[i] || typeof dataset[i].data !== 'object') {
+          throwChartError(`Dataset on index ${i} does not contain the 'data' property of type object.`);
+        }
+      }
+    } else if (!dataset || typeof dataset.data !== 'object') {
+      throwChartError("Dataset requires the 'data' property of type object.");
     }
     setReducedOptions(allowedTypes || []);
   }, [allowedTypes, defaultType])
@@ -134,11 +143,11 @@ const GraitorChart: FC<Props> = ({
         return options
       case ChartType.HBAR:
         options = HBar({
-                        displayValues: labelsType !== ChartLabelsType.HIDDEN,
+                         displayValues: labelsType !== ChartLabelsType.HIDDEN,
                          displayLegend: Array.isArray(dataset),
-                        align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.CENTER,
-                        anchor: labelsType === ChartLabelsType.FLOAT ? ChartAnchorType.END : ChartAnchorType.CENTER,
-                      })
+                         align: labelsType === ChartLabelsType.FLOAT ? ChartAlignType.END : ChartAlignType.CENTER,
+                         anchor: labelsType === ChartLabelsType.FLOAT ? ChartAnchorType.END : ChartAnchorType.CENTER,
+                       })
         if (Math.max(...Object.values(innerData)) - Math.min(...Object.values(innerData)) < 6) {
           options.scales.xAxes.ticks.stepSize = 1
         }
@@ -158,7 +167,10 @@ const GraitorChart: FC<Props> = ({
   }
 
   const isDatasetEmpty = (): boolean => {
-    const sumDatasetValues = (dataset: Dataset): number => Object.values(dataset.data).reduce((acc, next) => acc + next, 0)
+    const sumDatasetValues = (dataset: Dataset): number => {
+      if (!dataset || !dataset.data) return 0
+      return Object.values(dataset.data).reduce((acc, next) => acc + next, 0);
+    }
 
     if (!dataset) return true
     if (Array.isArray(dataset)) {
@@ -212,6 +224,7 @@ const GraitorChart: FC<Props> = ({
         <div className={ "chart-empty-note" }>Nothing to show</div>
         }
         <div style={ { display: 'flex' } }>
+          { !isDatasetEmpty() &&
           <GraitorDropdown title={ "Labels" }
                            defaultItem={ labelChartOptions.find(item => item.key === ChartLabelsType.FLOAT) }
                            options={ labelChartOptions }
@@ -219,20 +232,21 @@ const GraitorChart: FC<Props> = ({
                              setLabelsType(key as ChartLabelsType)
                            } }
           />
+          }
           { (!isDatasetEmpty() && allowedTypes?.length !== 1) &&
-            <div style={{ display: 'flex' }}>
-              <div style={ { margin: '.2em' } }></div>
-              <GraitorDropdown title={ "Type" }
-                               defaultItem={ chartTypeOptions.find(item => item.key === innerDefaultType) }
-                               options={
-                                 chartTypeOptions.filter(option => Array.isArray(dataset) && option.key !== ChartType.PIE)
-                                                 .filter(option => reducedOptions.length === 0 || reducedOptions.includes(option.key as ChartType))
-                               }
-                               onChange={ (_oldValue, { key }) => {
-                                 setType(key as ChartType)
-                               } }
-              />
-            </div>
+          <div style={ { display: 'flex' } }>
+            <div style={ { margin: '.2em' } }></div>
+            <GraitorDropdown title={ "Type" }
+                             defaultItem={ chartTypeOptions.find(item => item.key === innerDefaultType) }
+                             options={
+                               chartTypeOptions.filter(option => Array.isArray(dataset) && option.key !== ChartType.PIE)
+                                               .filter(option => reducedOptions.length === 0 || reducedOptions.includes(option.key as ChartType))
+                             }
+                             onChange={ (_oldValue, { key }) => {
+                               setType(key as ChartType)
+                             } }
+            />
+          </div>
           }
         </div>
       </div>
@@ -242,7 +256,7 @@ const GraitorChart: FC<Props> = ({
                 width="400"
                 height="400"
                 style={ {
-                  maxHeight: type === "hbar" ? `${Math.max(Object.keys(getLongestDataset().data).length * 15, 500)}px`: '500px',
+                  maxHeight: type === "hbar" ? `${ Math.max(Object.keys(getLongestDataset().data).length * 15, 500) }px` : '500px',
                   maxWidth: '98%'
                 } }
         />

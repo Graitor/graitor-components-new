@@ -239,7 +239,7 @@ const GraitorChart: FC<Props> = ({
             <GraitorDropdown title={ "Type" }
                              defaultItem={ chartTypeOptions.find(item => item.key === innerDefaultType) }
                              options={
-                               chartTypeOptions.filter(option => Array.isArray(dataset) && option.key !== ChartType.PIE)
+                               chartTypeOptions.filter(option => !Array.isArray(dataset) || option.key !== ChartType.PIE)
                                                .filter(option => reducedOptions.length === 0 || reducedOptions.includes(option.key as ChartType))
                              }
                              onChange={ (_oldValue, { key }) => {

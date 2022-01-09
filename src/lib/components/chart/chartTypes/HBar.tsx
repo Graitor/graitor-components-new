@@ -1,7 +1,8 @@
-import { ChartAlignType, ChartAnchorType, ChartOptions, ChartScaleOptions } from "./index";
+import { ChartAlignType, ChartAnchorType, ChartOptions, ChartScaleOptions, LegendPosition } from "./index";
 
 interface Props {
   displayValues?: boolean,
+  displayLegend?: boolean,
   align?: ChartAlignType,
   anchor?: ChartAnchorType,
 }
@@ -11,6 +12,7 @@ export interface HBarChartOptions extends ChartOptions, ChartScaleOptions {
 
 const Chart = ({
                  displayValues = true,
+                 displayLegend = false,
                  align = ChartAlignType.CENTER,
                  anchor = ChartAnchorType.CENTER
                }: Props): HBarChartOptions => {
@@ -56,7 +58,8 @@ const Chart = ({
         }
       },
       legend: {
-        display: false,
+        display: displayLegend,
+        position: LegendPosition.RIGHT,
       },
       datalabels: {
         align: align,

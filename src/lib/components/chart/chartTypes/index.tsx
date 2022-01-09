@@ -31,6 +31,13 @@ interface ChartPadding {
   left?: number,
 }
 
+export enum LegendPosition {
+  TOP = 'top',
+  RIGHT = 'right',
+  BOTTOM = 'bottom',
+  LEFT = 'left',
+}
+
 export interface ChartScaleOptions {
   indexAxis?: string,
   scaleShowValues?: boolean,
@@ -73,6 +80,7 @@ export interface ChartOptions {
     },
     legend: {
       display: boolean,
+      position?: LegendPosition,
     },
     datalabels: {
       clamp?: boolean,

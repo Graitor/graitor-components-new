@@ -1,4 +1,4 @@
-import { ChartAlignType, ChartAnchorType, ChartOptions, ChartScaleOptions } from "./index";
+import { ChartAlignType, ChartAnchorType, ChartOptions, ChartScaleOptions, LegendPosition } from "./index";
 
 export enum LineChartPointType {
   CIRCLE = "circle"
@@ -6,6 +6,7 @@ export enum LineChartPointType {
 
 interface Props {
   displayValues?: boolean,
+  displayLegend?: boolean,
   fill?: boolean,
   align?: ChartAlignType
 }
@@ -26,7 +27,7 @@ export interface LineChartOptions extends ChartOptions, ChartScaleOptions {
   },
 }
 
-const Chart = ({ displayValues = true, fill = false, align = ChartAlignType.CENTER }: Props): LineChartOptions => {
+const Chart = ({ displayValues = true, displayLegend = false, fill = false, align = ChartAlignType.CENTER }: Props): LineChartOptions => {
 
   return {
     scales: {
@@ -71,7 +72,8 @@ const Chart = ({ displayValues = true, fill = false, align = ChartAlignType.CENT
         }
       },
       legend: {
-        display: false,
+        display: displayLegend,
+        position: LegendPosition.RIGHT
       },
       datalabels: {
         align: align,

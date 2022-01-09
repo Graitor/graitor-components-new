@@ -1,8 +1,9 @@
-import { ChartAlignType, ChartAnchorType, ChartOptions } from "./index";
+import { ChartAlignType, ChartAnchorType, ChartOptions, LegendPosition } from "./index";
 
 interface Props {
   labels: string[],
   displayValues?: boolean,
+  displayLegend?: boolean,
   align?: ChartAlignType,
   unit?: string,
 }
@@ -11,7 +12,7 @@ export interface PieChartOptions extends ChartOptions {
 
 }
 
-const Chart = ({ labels, align = ChartAlignType.END, displayValues = true, unit = "" }: Props): PieChartOptions => {
+const Chart = ({ labels, align = ChartAlignType.END, displayValues = true, displayLegend = false, unit = "" }: Props): PieChartOptions => {
 
   return {
     layout: {
@@ -26,7 +27,8 @@ const Chart = ({ labels, align = ChartAlignType.END, displayValues = true, unit 
         }
       },
       legend: {
-        display: false,
+        display: displayLegend,
+        position: LegendPosition.RIGHT,
       },
       datalabels: {
         clamp: true,

@@ -23,13 +23,16 @@ Works out of the box. Plug and play.
 - GraitorChart :chart_with_upwards_trend:
   - id (required, string) - ID of the chart
   - title (required, string) - Title of the chart
-  - dataset (required, object<string, number>) - Data to be displayed
+  - dataset (required, object<label: string, data: <string, number>) - Data to be displayed, multiple datasets support
   - defaultType (optional, string) - Default chart type
   - allowedTypes (optional, array[line, vbar, hbar, pie]) - Allowed subarray of chart types
   - colors (optional, string[]) - Color pallet to be used for the chart
   - formatLabels (optional, function) - Format labels
-  - sortLabels (optional, function) - Sort labels
-  - notes: hbar type always display all Y labels, thus its height is dynamic 
+  - sortLabels (optional, function) - Sort labels, default sort alphabetically
+  - notes: 
+    - hbar type always displays all Y labels, thus its height is dynamic
+    - pie chart type not supported with multiple datasets
+    - to ignore default sort sortLabels parameter needs to be provided, ex: () => 1
   - example:
 ```javascript
 <GraitorChart id={"chart"}
@@ -37,9 +40,12 @@ Works out of the box. Plug and play.
               defaultType={"vbar"}
               allowedTypes={["vbar", "line"]}
               dataset={{
-                '2021-10-17': 1,
-                '2021-10-18': 4,
-                '2021-10-19': 150,
+                label: 'My Graitor Label',
+                data: {
+                  '2021-10-17': 1,
+                  '2021-10-18': 4,
+                  '2021-10-19': 150,
+                }
               }}
               colors={["#f6a47a", "#5bf13d"]}
               formatLabels={(label) => {

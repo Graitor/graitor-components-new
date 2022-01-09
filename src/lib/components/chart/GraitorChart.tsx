@@ -178,7 +178,6 @@ const GraitorChart: FC<Props> = ({
         { isDatasetEmpty() &&
         <div className={ "chart-empty-note" }>Nothing to show</div>
         }
-        { (!isDatasetEmpty() && allowedTypes?.length !== 1) &&
         <div style={ { display: 'flex' } }>
           <GraitorDropdown title={ "Labels" }
                            defaultItem={ labelChartOptions.find(item => item.key === ChartLabelsType.FLOAT) }
@@ -187,16 +186,19 @@ const GraitorChart: FC<Props> = ({
                              setLabelsType(key as ChartLabelsType)
                            } }
           />
-          <div style={ { margin: '.2em' } }></div>
-          <GraitorDropdown title={ "Type" }
-                           defaultItem={ chartTypeOptions.find(item => item.key === innerDefaultType) }
-                           options={ chartTypeOptions.filter(option => reducedOptions.length === 0 || reducedOptions.includes(option.key as ChartType)) }
-                           onChange={ (_oldValue, { key }) => {
-                             setType(key as ChartType)
-                           } }
-          />
+          { (!isDatasetEmpty() && allowedTypes?.length !== 1) &&
+            <div style={{ display: 'flex' }}>
+              <div style={ { margin: '.2em' } }></div>
+              <GraitorDropdown title={ "Type" }
+                               defaultItem={ chartTypeOptions.find(item => item.key === innerDefaultType) }
+                               options={ chartTypeOptions.filter(option => reducedOptions.length === 0 || reducedOptions.includes(option.key as ChartType)) }
+                               onChange={ (_oldValue, { key }) => {
+                                 setType(key as ChartType)
+                               } }
+              />
+            </div>
+          }
         </div>
-        }
       </div>
       { !isDatasetEmpty() &&
       <div>

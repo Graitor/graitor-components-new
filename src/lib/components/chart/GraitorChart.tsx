@@ -51,7 +51,7 @@ const GraitorChart: FC<Props> = ({
                                    sortLabels = (first, second) => first === second ? 0 : first > second ? 1 : -1,
                                  }): JSX.Element => {
   const [chart, setChart] = useState<Chart>()
-  const [type, setType] = useState<ChartType>(allowedTypes && allowedTypes.length > 0 ? defaultType ?? allowedTypes[0] : defaultType ?? ChartType.HBAR)
+  const [type, setType] = useState<ChartType>(allowedTypes && allowedTypes.length > 0 ? defaultType ?? allowedTypes[0] : defaultType ?? ChartType.VBAR)
   const [labelsType, setLabelsType] = useState<ChartLabelsType>(ChartLabelsType.FLOAT)
   const [innerDefaultType] = useState<ChartType>(type)
   const [reducedOptions, setReducedOptions] = useState<ChartType[]>(allowedTypes || [])
@@ -254,9 +254,9 @@ const GraitorChart: FC<Props> = ({
       <div>
         <canvas id={ id }
                 width="400"
-                height="400"
+                height="800"
                 style={ {
-                  maxHeight: type === "hbar" ? `${ Math.max(Object.keys(getLongestDataset().data).length * 15, 500) }px` : '500px',
+                  maxHeight: type === "hbar" ? `${ Math.max(Object.keys(getLongestDataset().data).length * 15, 800) }px` : '500px',
                   maxWidth: '98%'
                 } }
         />

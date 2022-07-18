@@ -1,5 +1,5 @@
 {
-  "name": "graitor-components",
+  "name": "graitor-components-test",
   "version": "0.0.29",
   "author": "jakubzzak <jakub@graitor.dk> (https://jakubzzak.netlify.app/)",
   "contributors": [],
@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Graitor/graitor-components.git"
+    "url": "git+https://github.com/Graitor/graitor-components-test.git"
   },
   "dependencies": {
     "chart.js": "^3.6.0",
